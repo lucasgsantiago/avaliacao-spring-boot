@@ -6,8 +6,9 @@ import javax.validation.Valid;
 
 import br.com.tokiomarine.seguradora.avaliacao.entidade.Estudante;
 import br.com.tokiomarine.seguradora.avaliacao.repository.EstudanteRepository;
+import org.springframework.stereotype.Service;
 
-// TODO Efetue a implementação dos métodos da classe service
+@Service
 public class EstudanteServiceImpl implements EstudandeService {
 
 	EstudanteRepository repository;
