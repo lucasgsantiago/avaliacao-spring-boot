@@ -53,4 +53,13 @@ public class EstudanteRestController {
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity apagarEstudante(@PathVariable("id") Long id) throws ResourceNotFoundException {
+        if(id == null) {
+            return ResponseEntity.ok(HttpStatus.BAD_REQUEST);
+        }
+        service.apagarEstudante(id);
+        return ResponseEntity.ok(HttpStatus.OK);
+    }
+
 }

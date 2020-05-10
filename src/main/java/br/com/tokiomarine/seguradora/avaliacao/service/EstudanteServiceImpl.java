@@ -96,6 +96,15 @@ public class EstudanteServiceImpl implements EstudanteService {
 		repository.save(estudante);
 	}
 
+	@Override
+	public void apagarEstudante(Long estudanteId) throws ResourceNotFoundException {
+		Optional<Estudante> res = repository.findById(estudanteId);
+		if(!res.isPresent()){
+			throw new ResourceNotFoundException("Não foi encontrado nenhum Estudante com o ID: "+ estudanteId);
+		}
+		repository.deleteById(estudanteId);
+	}
+
 	private boolean verificarSeExisteComEmail(String email) {
 		return obterEstuantePorEmail(email) != null;
 	}
@@ -109,4 +118,5 @@ public class EstudanteServiceImpl implements EstudanteService {
 		if(email == null ) throw new IllegalArgumentException("Identificador inválido:" + email);
 		return repository.findByEmail(email);
 	}
+
 }

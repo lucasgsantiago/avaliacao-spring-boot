@@ -24,4 +24,6 @@ public interface EstudanteService {
 	EstudanteResult buscarEstudante(Long estudanteId) throws ResourceNotFoundException;
 
 	void atualizarEstudante(@Valid EditarEstudanteCommand command) throws ResourceNotFoundException, BusinessException;
+
+	void apagarEstudante(Long estudanteId) throws ResourceNotFoundException;
 }

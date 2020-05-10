@@ -68,8 +68,8 @@ public class EstudanteController {
 	}
 
 	@GetMapping("apagar/{id}")
-	public String apagarEstudante(@PathVariable("id") long id, Model model) {
-		// TODO IMPLEMENTAR A EXCLUSAO DE ESTUDANTES
+	public String apagarEstudante(@PathVariable("id") Long id, Model model) throws ResourceNotFoundException {
+		service.apagarEstudante(id);
 		model.addAttribute("estudantes", service.buscarEstudantes());
 		return "index";
 	}
