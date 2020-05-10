@@ -7,10 +7,15 @@ import javax.validation.Valid;
 import br.com.tokiomarine.seguradora.avaliacao.commands.estudantes.AdicionarEstudanteCommand;
 import br.com.tokiomarine.seguradora.avaliacao.entidade.Estudante;
 import br.com.tokiomarine.seguradora.avaliacao.helpers.BusinessException;
+import br.com.tokiomarine.seguradora.avaliacao.queries.estudantes.requests.EstudantesRequest;
+import br.com.tokiomarine.seguradora.avaliacao.queries.estudantes.results.EstudanteListResult;
+import br.com.tokiomarine.seguradora.avaliacao.queries.estudantes.results.EstudanteResult;
 
 public interface EstudanteService {
 
-	List<Estudante> buscarEstudantes();
+	EstudanteListResult buscarEstudantes(EstudantesRequest request);
+
+	List<EstudanteResult> buscarEstudantes();
 
 	void cadastrarEstudante(@Valid AdicionarEstudanteCommand command) throws BusinessException;
 
