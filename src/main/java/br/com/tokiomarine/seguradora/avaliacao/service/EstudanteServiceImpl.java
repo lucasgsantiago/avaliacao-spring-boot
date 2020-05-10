@@ -1,8 +1,10 @@
 package br.com.tokiomarine.seguradora.avaliacao.service;
 
 import br.com.tokiomarine.seguradora.avaliacao.commands.estudantes.AdicionarEstudanteCommand;
+import br.com.tokiomarine.seguradora.avaliacao.commands.estudantes.EditarEstudanteCommand;
 import br.com.tokiomarine.seguradora.avaliacao.entidade.Estudante;
 import br.com.tokiomarine.seguradora.avaliacao.helpers.BusinessException;
+import br.com.tokiomarine.seguradora.avaliacao.helpers.ResourceNotFoundException;
 import br.com.tokiomarine.seguradora.avaliacao.queries.estudantes.requests.EstudantesRequest;
 import br.com.tokiomarine.seguradora.avaliacao.queries.estudantes.results.EstudanteListResult;
 import br.com.tokiomarine.seguradora.avaliacao.queries.estudantes.results.EstudanteResult;
@@ -16,6 +18,8 @@ import org.springframework.stereotype.Service;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 @Service
 public class EstudanteServiceImpl implements EstudanteService {
 
@@ -62,19 +66,43 @@ public class EstudanteServiceImpl implements EstudanteService {
 	}
 
 	@Override
-	public void atualizarEstudante(@Valid Estudante estudante) {
+	public EstudanteResult buscarEstudante(Long estudanteId) throws ResourceNotFoundException {
+		if(estudanteId == null || estudanteId == 0L ) throw new IllegalArgumentException("Identificador inválido:" + estudanteId);
 
+		Optional<Estudante> res = repository.findById(estudanteId);
+		if(!res.isPresent()){
+			throw new ResourceNotFoundException("Não foi encontrado nenhum Estudante com o ID: "+ estudanteId);
+		}
+		Estudante estudante = res.get();
+		return new EstudanteResult(estudante.getId(),estudante.getNome(),estudante.getEmail(),estudante.getTelefone());
 	}
 
-
-
 	@Override
-	public Estudante buscarEstudante(long id) {
-		throw new IllegalArgumentException("Identificador inválido:" + id);
+	public void atualizarEstudante(EditarEstudanteCommand command) throws ResourceNotFoundException, BusinessException {
+		if(command.getId() == null || command.getId() == 0L ) throw new IllegalArgumentException("Identificador inválido:" + command.getId());
+
+		Optional<Estudante> res = repository.findById(command.getId());
+
+		if(!res.isPresent()) throw new ResourceNotFoundException("Não foi encontrado nenhum Estudante com o ID: "+ command.getId());
+
+		Estudante estudante = res.get();
+
+		if(verificarSeExisteComEmail(command.getId(),command.getEmail())){
+			throw new BusinessException("Já existe um Estudante com este E-mail: " + command.getEmail());
+		}
+
+		estudante.alterar(command.getNome(),command.getEmail(),command.getTelefone());
+
+		repository.save(estudante);
 	}
 
 	private boolean verificarSeExisteComEmail(String email) {
 		return obterEstuantePorEmail(email) != null;
+	}
+
+	private boolean verificarSeExisteComEmail(Long commandId, String email) {
+		Estudante estudante = obterEstuantePorEmail(email);
+		return estudante != null && estudante.getId() != commandId;
 	}
 
 	private Estudante obterEstuantePorEmail(String email){
