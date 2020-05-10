@@ -26,7 +26,6 @@
 							<tr>
 								<th>Nome</th>
 								<th>Email</th>
-								<th>Telefone</th>
 								<th>Editar</th>
 								<th>Apagar</th>
 							</tr>
@@ -37,7 +36,7 @@
 								<td th:text="${estudante.email}"></td>
 								<td th:text="${estudante.telefone}"></td>
 								<td><a th:href="@{/estudantes/editar/{id}(id=${estudante.id})}" class="btn btn-warning"><i class="fas fa-user-edit ml-2"></i></a></td>
-								<td><a th:href="@{/estudantes/apagar/{id}(id=${estudante.id})}" class="btn btn-warning"><i class="fas fa-user-times ml-2"></i></a></td>
+								<td><a th:href="@{/estudantes/apagar/{id}(id=${estudante.id})}" class="btn btn-danger"><i class="fas fa-user-times ml-2"></i></a></td>
 							</tr>
 							</tbody>
 						</table>
