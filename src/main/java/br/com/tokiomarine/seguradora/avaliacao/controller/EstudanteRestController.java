@@ -1,15 +1,29 @@
 package br.com.tokiomarine.seguradora.avaliacao.controller;
 
-// TODO não esquecer de usar as anotações para criação do restcontroller
+import br.com.tokiomarine.seguradora.avaliacao.commands.estudantes.AdicionarEstudanteCommand;
+import br.com.tokiomarine.seguradora.avaliacao.helpers.BusinessException;
+import br.com.tokiomarine.seguradora.avaliacao.service.EstudanteService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
+
+@RestController
+@RequestMapping("/api/v1/estudantes")
 public class EstudanteRestController {
 
-	// TODO caso você não conheça THEMELEAF faça a implementação dos métodos em forma de RESTCONTROLLER (seguindo o padrão RESTFUL)
+    @Autowired
+    private EstudanteService service;
 
-	// TODO IMPLEMENTAR CADASTRO DE ESTUDANTES (POST)
+    @PostMapping
+    public ResponseEntity adicionarEstudante(@Valid @RequestBody AdicionarEstudanteCommand command) throws BusinessException {
+        service.cadastrarEstudante(command);
+        return ResponseEntity.ok(HttpStatus.OK);
+    }
 
-	// TODO IMPLEMENTAR ATUALIZACAO DE ESTUDANTES (PUT)
-
-	// TODO IMPLEMENTAR A LISTAGEM DE ESTUDANTES (GET)
-
-	// TODO IMPLEMENTAR A EXCLUSÃO DE ESTUDANTES (DELETE)
 }

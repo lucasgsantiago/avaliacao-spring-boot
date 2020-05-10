@@ -4,13 +4,15 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import br.com.tokiomarine.seguradora.avaliacao.commands.estudantes.AdicionarEstudanteCommand;
 import br.com.tokiomarine.seguradora.avaliacao.entidade.Estudante;
+import br.com.tokiomarine.seguradora.avaliacao.helpers.BusinessException;
 
-public interface EstudandeService {
+public interface EstudanteService {
 
 	List<Estudante> buscarEstudantes();
 
-	void cadastrarEstudante(@Valid Estudante estudante);
+	void cadastrarEstudante(@Valid AdicionarEstudanteCommand command) throws BusinessException;
 
 	Estudante buscarEstudante(long id);
 

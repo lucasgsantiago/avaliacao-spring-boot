@@ -2,6 +2,8 @@ package br.com.tokiomarine.seguradora.avaliacao.controller;
 
 import javax.validation.Valid;
 
+import br.com.tokiomarine.seguradora.avaliacao.commands.estudantes.AdicionarEstudanteCommand;
+import br.com.tokiomarine.seguradora.avaliacao.helpers.BusinessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,14 +14,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import br.com.tokiomarine.seguradora.avaliacao.entidade.Estudante;
-import br.com.tokiomarine.seguradora.avaliacao.service.EstudandeService;
+import br.com.tokiomarine.seguradora.avaliacao.service.EstudanteService;
 
 @Controller
 @RequestMapping("/estudantes/")
 public class EstudanteController {
 
 	@Autowired
-	private EstudandeService service;
+	private EstudanteService service;
 
 	@GetMapping("criar")
 	public String iniciarCastrado(Estudante estudante) {
@@ -33,12 +35,12 @@ public class EstudanteController {
 	}
 
 	@PostMapping("add")
-	public String adicionarEstudante(@Valid Estudante estudante, BindingResult result, Model model) {
+	public String adicionarEstudante(@Valid AdicionarEstudanteCommand command, BindingResult result, Model model) throws BusinessException {
 		if (result.hasErrors()) {
 			return "cadastrar-estudante";
 		}
 
-		service.cadastrarEstudante(estudante);
+		service.cadastrarEstudante(command);
 
 		return "redirect:listar";
 	}
