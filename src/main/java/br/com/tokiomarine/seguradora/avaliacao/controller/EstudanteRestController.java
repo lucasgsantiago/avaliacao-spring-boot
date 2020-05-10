@@ -61,5 +61,4 @@ public class EstudanteRestController {
         service.apagarEstudante(id);
         return ResponseEntity.ok(HttpStatus.OK);
     }
-
 }

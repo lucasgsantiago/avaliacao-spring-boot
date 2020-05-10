@@ -6,25 +6,26 @@ import br.com.tokiomarine.seguradora.avaliacao.commands.estudantes.AdicionarEstu
 import br.com.tokiomarine.seguradora.avaliacao.commands.estudantes.EditarEstudanteCommand;
 import br.com.tokiomarine.seguradora.avaliacao.helpers.BusinessException;
 import br.com.tokiomarine.seguradora.avaliacao.helpers.ResourceNotFoundException;
+import br.com.tokiomarine.seguradora.avaliacao.queries.estudantes.results.EstudanteListResult;
 import br.com.tokiomarine.seguradora.avaliacao.queries.estudantes.results.EstudanteResult;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import br.com.tokiomarine.seguradora.avaliacao.entidade.Estudante;
 import br.com.tokiomarine.seguradora.avaliacao.service.EstudanteService;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/estudantes/")
 public class EstudanteController {
 
 	@Autowired
-	private EstudanteService service;
+	EstudanteService service;
 
 	@GetMapping("criar")
 	public String iniciarCastrado(Estudante estudante) {
@@ -58,6 +59,7 @@ public class EstudanteController {
 	@PostMapping("atualizar/{id}")
 	public String atualizarEstudante(@PathVariable("id") Long id, @Valid EditarEstudanteCommand command, BindingResult result, Model model) throws ResourceNotFoundException, BusinessException {
 		if (result.hasErrors()) {
+			command.setId(id);
 			return "atualizar-estudante";
 		}
 		command.setId(id);

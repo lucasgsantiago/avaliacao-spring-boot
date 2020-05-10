@@ -29,22 +29,32 @@ public class Estudante implements Serializable {
     @Email(message = "Email inválido")
     private String email;
 
+    @NotNull(message = "Matricula é obrigatório")
+    private String matricula;
+
+    private String curso;
+
     private String telefone;
 
-    public Estudante(String nome, String email) {
+    public Estudante(String nome, String email, String matricula) {
         this.nome = nome;
         this.email = email;
+        this.matricula = matricula;
     }
 
-    public Estudante(String nome, String email, String telefone) {
+    public Estudante(String nome, String email, String matricula, String curso, String telefone) {
         this.nome = nome;
         this.email = email;
+        this.matricula = matricula;
+        this.curso = curso;
         this.telefone = telefone;
     }
 
-    public void alterar(String nome, String email, String telefone) throws BusinessException {
+    public void alterar(String nome, String email, String matricula, String curso, String telefone) throws BusinessException {
         this.nome = nome;
         this.email = email;
+        this.matricula = matricula;
+        this.curso = curso;
         this.telefone = telefone;
         this.validar();
     }

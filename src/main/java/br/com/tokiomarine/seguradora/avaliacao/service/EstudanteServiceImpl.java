@@ -15,7 +15,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -27,14 +26,15 @@ public class EstudanteServiceImpl implements EstudanteService {
 	private EstudanteRepository repository;
 
 	@Override
-	public void cadastrarEstudante(AdicionarEstudanteCommand command) throws BusinessException {
-		if(verificarSeExisteComEmail(command.getEmail())){
-			throw new BusinessException("Já existe um Estudante com este E-mail: " + command.getEmail());
-		}
+	public EstudanteResult buscarEstudante(Long estudanteId) throws ResourceNotFoundException {
+		if(estudanteId == null || estudanteId == 0L ) throw new IllegalArgumentException("Identificador inválido:" + estudanteId);
 
-		Estudante estudante = new Estudante(command.getNome(),command.getEmail(), command.getTelefone());
-		estudante.validar();
-		repository.save(estudante);
+		Optional<Estudante> res = repository.findById(estudanteId);
+		if(!res.isPresent()){
+			throw new ResourceNotFoundException("Não foi encontrado nenhum Estudante com o ID: "+ estudanteId);
+		}
+		Estudante estudante = res.get();
+		return new EstudanteResult(estudante.getId(),estudante.getNome(),estudante.getEmail(),estudante.getMatricula(),estudante.getTelefone(),estudante.getCurso());
 	}
 
 	@Override
@@ -47,7 +47,7 @@ public class EstudanteServiceImpl implements EstudanteService {
 		EstudanteListResult result = new EstudanteListResult((int)page.getTotalElements(),page.getSize(),page.getTotalPages());
 
 		estudantesModel.forEach(estudante -> result.getEstudantes().add(
-				new EstudanteResult(estudante.getId(),estudante.getNome(),estudante.getEmail(),estudante.getTelefone())
+				new EstudanteResult(estudante.getId(),estudante.getNome(),estudante.getEmail(),estudante.getMatricula(),estudante.getTelefone(),estudante.getCurso())
 				)
 		);
 
@@ -59,22 +59,22 @@ public class EstudanteServiceImpl implements EstudanteService {
 		List<Estudante> estudantesModel = repository.findAll();
 		List<EstudanteResult> estudantesResult = new ArrayList<>();
 		estudantesModel.forEach(estudante -> estudantesResult.add(
-				new EstudanteResult(estudante.getId(),estudante.getNome(),estudante.getEmail(),estudante.getTelefone())
+				new EstudanteResult(estudante.getId(),estudante.getNome(),estudante.getEmail(),estudante.getMatricula(),estudante.getTelefone(),estudante.getCurso())
 				)
 		);
 		return estudantesResult;
 	}
 
 	@Override
-	public EstudanteResult buscarEstudante(Long estudanteId) throws ResourceNotFoundException {
-		if(estudanteId == null || estudanteId == 0L ) throw new IllegalArgumentException("Identificador inválido:" + estudanteId);
+	public void cadastrarEstudante(AdicionarEstudanteCommand command) throws BusinessException {
 
-		Optional<Estudante> res = repository.findById(estudanteId);
-		if(!res.isPresent()){
-			throw new ResourceNotFoundException("Não foi encontrado nenhum Estudante com o ID: "+ estudanteId);
+		if(verificarSeExisteComEmail(command.getEmail())){
+			throw new BusinessException("Já existe um Estudante com este E-mail: " + command.getEmail());
 		}
-		Estudante estudante = res.get();
-		return new EstudanteResult(estudante.getId(),estudante.getNome(),estudante.getEmail(),estudante.getTelefone());
+
+		Estudante estudante = new Estudante(command.getNome(),command.getEmail(),command.getMatricula(),command.getCurso(), command.getTelefone());
+		estudante.validar();
+		repository.save(estudante);
 	}
 
 	@Override
@@ -91,18 +91,9 @@ public class EstudanteServiceImpl implements EstudanteService {
 			throw new BusinessException("Já existe um Estudante com este E-mail: " + command.getEmail());
 		}
 
-		estudante.alterar(command.getNome(),command.getEmail(),command.getTelefone());
+		estudante.alterar(command.getNome(),command.getEmail(),command.getMatricula(),command.getCurso(),command.getTelefone());
 
 		repository.save(estudante);
-	}
-
-	@Override
-	public void apagarEstudante(Long estudanteId) throws ResourceNotFoundException {
-		Optional<Estudante> res = repository.findById(estudanteId);
-		if(!res.isPresent()){
-			throw new ResourceNotFoundException("Não foi encontrado nenhum Estudante com o ID: "+ estudanteId);
-		}
-		repository.deleteById(estudanteId);
 	}
 
 	private boolean verificarSeExisteComEmail(String email) {
@@ -117,6 +108,15 @@ public class EstudanteServiceImpl implements EstudanteService {
 	private Estudante obterEstuantePorEmail(String email){
 		if(email == null ) throw new IllegalArgumentException("Identificador inválido:" + email);
 		return repository.findByEmail(email);
+	}
+
+	@Override
+	public void apagarEstudante(Long estudanteId) throws ResourceNotFoundException {
+		Optional<Estudante> res = repository.findById(estudanteId);
+		if(!res.isPresent()){
+			throw new ResourceNotFoundException("Não foi encontrado nenhum Estudante com o ID: "+ estudanteId);
+		}
+		repository.deleteById(estudanteId);
 	}
 
 }

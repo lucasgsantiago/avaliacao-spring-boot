@@ -15,6 +15,10 @@ public class EstudanteResult {
 
     private String email;
 
+    private String matricula;
+
     private String telefone;
+
+    private String curso;
 
 }

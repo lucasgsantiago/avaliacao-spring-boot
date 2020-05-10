@@ -26,6 +26,12 @@ public class EditarEstudanteCommand {
     @Email
     private String email;
 
+    @NotNull
+    @NotBlank
+    private String matricula;
+
+    private String curso;
+
     private String telefone;
 
 }
