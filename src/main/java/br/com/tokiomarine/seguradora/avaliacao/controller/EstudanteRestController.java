@@ -27,7 +27,7 @@ public class EstudanteRestController {
             @RequestParam(value = "page", required = false) Integer page,
             @RequestParam(value = "size", required = false) Integer size){
         EstudanteListResult result = service.buscarEstudantes(new EstudantesRequest(page,size));
-        return new ResponseEntity<>(result,HttpStatus.OK);
+        return ResponseEntity.ok().body(result);
     }
 
     @GetMapping("/{id}")

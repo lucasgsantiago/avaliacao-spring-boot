@@ -17,17 +17,14 @@ public class EditarEstudanteCommand {
 
     private Long id;
 
-    @NotNull
-    @NotBlank
+    @NotBlank(message = "Nome é obrigatório")
     private String nome;
 
-    @NotNull
-    @NotBlank
-    @Email
+    @NotBlank(message = "Email é obrigatório")
+    @Email(message = "Email inválido")
     private String email;
 
-    @NotNull
-    @NotBlank
+    @NotBlank(message = "Matricula é obrigatório")
     private String matricula;
 
     private String curso;

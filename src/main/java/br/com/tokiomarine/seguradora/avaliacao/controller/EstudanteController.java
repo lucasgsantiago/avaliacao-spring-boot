@@ -25,10 +25,10 @@ import java.util.List;
 public class EstudanteController {
 
 	@Autowired
-	EstudanteService service;
+	private EstudanteService service;
 
 	@GetMapping("criar")
-	public String iniciarCastrado(Estudante estudante) {
+	public String iniciarCastrado(AdicionarEstudanteCommand estudante) {
 		return "cadastrar-estudante";
 	}
 
@@ -39,12 +39,13 @@ public class EstudanteController {
 	}
 
 	@PostMapping("add")
-	public String adicionarEstudante(@Valid AdicionarEstudanteCommand command, BindingResult result, Model model) throws BusinessException {
+	public String adicionarEstudante(@Valid AdicionarEstudanteCommand estudante, BindingResult result, Model model) throws BusinessException {
 		if (result.hasErrors()) {
 			return "cadastrar-estudante";
 		}
 
-		service.cadastrarEstudante(command);
+		model.addAttribute("estudante", estudante);
+		service.cadastrarEstudante(estudante);
 
 		return "redirect:listar";
 	}
