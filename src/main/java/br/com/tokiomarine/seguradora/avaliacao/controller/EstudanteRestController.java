@@ -4,12 +4,12 @@ import br.com.tokiomarine.seguradora.avaliacao.commands.estudantes.AdicionarEstu
 import br.com.tokiomarine.seguradora.avaliacao.commands.estudantes.EditarEstudanteCommand;
 import br.com.tokiomarine.seguradora.avaliacao.helpers.BusinessException;
 import br.com.tokiomarine.seguradora.avaliacao.helpers.ResourceNotFoundException;
+import br.com.tokiomarine.seguradora.avaliacao.helpers.Success;
 import br.com.tokiomarine.seguradora.avaliacao.queries.estudantes.requests.EstudantesRequest;
 import br.com.tokiomarine.seguradora.avaliacao.queries.estudantes.results.EstudanteListResult;
 import br.com.tokiomarine.seguradora.avaliacao.queries.estudantes.results.EstudanteResult;
 import br.com.tokiomarine.seguradora.avaliacao.service.EstudanteService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,38 +27,38 @@ public class EstudanteRestController {
             @RequestParam(value = "page", required = false) Integer page,
             @RequestParam(value = "size", required = false) Integer size){
         EstudanteListResult result = service.buscarEstudantes(new EstudantesRequest(page,size));
-        return ResponseEntity.ok().body(result);
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<EstudanteResult> bucarEstudante(@PathVariable("id") Long id) throws ResourceNotFoundException{
         EstudanteResult result = service.buscarEstudante(id);
-        return ResponseEntity.ok().body(result);
+        return ResponseEntity.ok(result);
     }
 
     @PostMapping
     public ResponseEntity adicionarEstudante(@Valid @RequestBody AdicionarEstudanteCommand command) throws BusinessException {
-        service.cadastrarEstudante(command);
-        return ResponseEntity.ok(HttpStatus.OK);
+        Long correlationId = service.cadastrarEstudante(command);
+        return ResponseEntity.ok(new Success(correlationId));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity alterarEstudante(
-            @PathVariable("id") Long id,
+            @PathVariable("id") Long correlationId,
             @Valid @RequestBody EditarEstudanteCommand command) throws ResourceNotFoundException, BusinessException {
 
-        command.setId(id);
+        command.setId(correlationId);
         service.atualizarEstudante(command);
 
-        return ResponseEntity.ok(HttpStatus.OK);
+        return ResponseEntity.ok(new Success(correlationId,"Registro Alterado com sucesso!"));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity apagarEstudante(@PathVariable("id") Long id) throws ResourceNotFoundException {
         if(id == null) {
-            return ResponseEntity.ok(HttpStatus.BAD_REQUEST);
+            return ResponseEntity.badRequest().build();
         }
         service.apagarEstudante(id);
-        return ResponseEntity.ok(HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 }

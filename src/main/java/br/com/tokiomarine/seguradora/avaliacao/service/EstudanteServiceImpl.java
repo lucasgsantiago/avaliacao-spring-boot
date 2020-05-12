@@ -66,7 +66,7 @@ public class EstudanteServiceImpl implements EstudanteService {
 	}
 
 	@Override
-	public void cadastrarEstudante(AdicionarEstudanteCommand command) throws BusinessException {
+	public Long cadastrarEstudante(AdicionarEstudanteCommand command) throws BusinessException {
 
 		if(verificarSeExisteComEmail(command.getEmail())){
 			throw new BusinessException("Já existe um Estudante com este E-mail: " + command.getEmail());
@@ -75,6 +75,7 @@ public class EstudanteServiceImpl implements EstudanteService {
 		Estudante estudante = new Estudante(command.getNome(),command.getEmail(),command.getMatricula(),command.getCurso(), command.getTelefone());
 		estudante.validar();
 		repository.save(estudante);
+		return estudante.getId();
 	}
 
 	@Override

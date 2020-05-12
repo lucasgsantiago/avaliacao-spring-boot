@@ -17,6 +17,8 @@ import java.util.Set;
 @NoArgsConstructor
 public class Estudante implements Serializable {
 
+    private static final long serialVersionUID = -8043311947952431411L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

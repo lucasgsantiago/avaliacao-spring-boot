@@ -20,7 +20,7 @@ public interface EstudanteService {
 
 	EstudanteResult buscarEstudante(Long estudanteId) throws ResourceNotFoundException;
 
-	void cadastrarEstudante(@Valid AdicionarEstudanteCommand command) throws BusinessException;
+	Long cadastrarEstudante(@Valid AdicionarEstudanteCommand command) throws BusinessException;
 
 	void apagarEstudante(Long estudanteId) throws ResourceNotFoundException;
 
